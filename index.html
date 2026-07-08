@@ -4,331 +4,556 @@ html
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>心理年龄测试</title>
+    <title>你的心理年龄是多少你知道吗？</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; }
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; color: #333; }
-        .test-container { background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); width: 100%; max-width: 600px; overflow: hidden; position: relative; }
-        .progress-bar { height: 5px; background: #eee; width: 100%; position: absolute; top: 0; left: 0; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.3s ease; }
-        .question-slide { display: none; padding: 40px; animation: fadeIn 0.5s ease; }
-        .question-slide.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .question-number { color: #667eea; font-size: 14px; font-weight: 600; margin-bottom: 10px; }
-        .question-title { font-size: 22px; font-weight: 700; margin-bottom: 30px; line-height: 1.5; }
-        .options { display: flex; flex-direction: column; gap: 15px; }
-        .option-btn { background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 12px; padding: 15px 20px; font-size: 16px; cursor: pointer; transition: all 0.3s ease; text-align: left; }
-        .option-btn:hover { background: #667eea; color: white; border-color: #667eea; transform: translateX(5px); }
-        .result-slide { text-align: center; padding: 60px 40px; }
-        .result-title { font-size: 28px; font-weight: 700; color: #667eea; margin-bottom: 20px; }
-        .result-age { font-size: 60px; font-weight: 900; color: #333; margin: 20px 0; }
-        .result-desc { font-size: 16px; color: #666; line-height: 1.8; margin-bottom: 30px; }
-        .restart-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; padding: 15px 40px; font-size: 16px; cursor: pointer; transition: transform 0.3s ease; }
-        .restart-btn:hover { transform: scale(1.05); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* 授权页样式 */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .auth-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .auth-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-tip {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* 测试页样式 */
+        .test-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+            position: relative;
+            display: none;
+            padding: 0;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            width: 100%;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-slide {
+            padding: 30px;
+            display: none;
+        }
+
+        .question-slide.active {
+            display: block;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .question-title {
+            font-size: 18px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .result-slide {
+            padding: 40px 30px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-slide.active {
+            display: block;
+        }
+
+        .result-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .result-age {
+            font-size: 60px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .result-desc {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 40px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
-    <div class="test-container">
+    <!-- 授权验证页面 -->
+    <div class="auth-container" id="authPage">
+        <h1 class="auth-title">你的心理年龄是多少你知道吗？</h1>
+        <p class="auth-subtitle">输入授权码，开启你的专属测试</p>
+        <input type="text" class="auth-input" id="codeInput" placeholder="请输入6位授权码" maxlength="6">
+        <button class="auth-btn" onclick="checkCode()">立即进入</button>
+        <p class="error-tip" id="errorTip">授权码错误，请重新输入</p>
+    </div>
+
+    <!-- 测试主页面 -->
+    <div class="test-container" id="testPage">
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
         </div>
 
-        <!-- 题目1 -->
+        <!-- 第1题 -->
         <div class="question-slide active" id="q1">
-            <div class="question-number">1/20</div>
-            <div class="question-title">遇到让你生气的事，你通常会怎么做？</div>
+            <div class="question-number">问题 1 / 20</div>
+            <div class="question-title">空闲时间你更愿意做什么？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">当场爆发，发泄完就没事了</button>
-                <button class="option-btn" data-score="2">先忍一忍，转头和朋友吐槽</button>
-                <button class="option-btn" data-score="3">默默消化，假装没发生过</button>
-                <button class="option-btn" data-score="4">冷静分析利弊，再决定要不要生气</button>
+                <button class="option-btn" data-score="1">A. 玩游戏、刷短视频</button>
+                <button class="option-btn" data-score="2">B. 出门逛街、聚会玩耍</button>
+                <button class="option-btn" data-score="3">C. 看书、学习提升自己</button>
+                <button class="option-btn" data-score="4">D. 做家务、整理生活</button>
             </div>
         </div>
 
-        <!-- 题目2 -->
+        <!-- 第2题 -->
         <div class="question-slide" id="q2">
-            <div class="question-number">2/20</div>
-            <div class="question-title">周末你更倾向于怎么度过？</div>
+            <div class="question-number">问题 2 / 20</div>
+            <div class="question-title">面对新鲜事物，你的态度是？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">约上朋友出门逛街、聚会</button>
-                <button class="option-btn" data-score="2">在家躺平刷手机、追剧</button>
-                <button class="option-btn" data-score="3">整理房间、看书，做点安静的事</button>
-                <button class="option-btn" data-score="4">制定下周计划，或者学点新东西</button>
+                <button class="option-btn" data-score="1">A. 立刻尝试，充满好奇</button>
+                <button class="option-btn" data-score="2">B. 先观望，再慢慢体验</button>
+                <button class="option-btn" data-score="3">C. 不太感兴趣，懒得接触</button>
+                <button class="option-btn" data-score="4">D. 本能排斥，坚持旧习惯</button>
             </div>
         </div>
 
-        <!-- 题目3 -->
+        <!-- 第3题 -->
         <div class="question-slide" id="q3">
-            <div class="question-number">3/20</div>
-            <div class="question-title">别人给你提意见，你会怎么反应？</div>
+            <div class="question-number">问题 3 / 20</div>
+            <div class="question-title">出门穿搭偏向哪种风格？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">立刻反驳，觉得对方在挑刺</button>
-                <button class="option-btn" data-score="2">嘴上答应，心里不太舒服</button>
-                <button class="option-btn" data-score="3">认真听完，有道理就改，没道理就忽略</button>
-                <button class="option-btn" data-score="4">主动反思，甚至会主动问别人更多建议</button>
+                <button class="option-btn" data-score="1">A. 潮流花哨，色彩鲜艳</button>
+                <button class="option-btn" data-score="2">B. 休闲舒适，简约日常</button>
+                <button class="option-btn" data-score="3">C. 大方得体，偏成熟风</button>
+                <button class="option-btn" data-score="4">D. 朴素低调，方便实用</button>
             </div>
         </div>
 
-        <!-- 题目4 -->
+        <!-- 第4题 -->
         <div class="question-slide" id="q4">
-            <div class="question-number">4/20</div>
-            <div class="question-title">面对没做过的事，你的第一反应是？</div>
+            <div class="question-number">问题 4 / 20</div>
+            <div class="question-title">遇到烦心事会怎样排解？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">哇！好有意思，立刻想试试</button>
-                <button class="option-btn" data-score="2">有点好奇，但怕麻烦，先看看别人怎么做</button>
-                <button class="option-btn" data-score="3">有点紧张，担心自己做不好</button>
-                <button class="option-btn" data-score="4">先查资料、做计划，准备好了再行动</button>
+                <button class="option-btn" data-score="1">A. 找人吐槽，说完就忘</button>
+                <button class="option-btn" data-score="2">B. 独自听歌、散步散心</button>
+                <button class="option-btn" data-score="3">C. 闷在心里，自我消化</button>
+                <button class="option-btn" data-score="4">D. 反复纠结，情绪低落很久</button>
             </div>
         </div>
 
-        <!-- 题目5 -->
+        <!-- 第5题 -->
         <div class="question-slide" id="q5">
-            <div class="question-number">5/20</div>
-            <div class="question-title">当你和朋友吵架了，你会怎么做？</div>
+            <div class="question-number">问题 5 / 20</div>
+            <div class="question-title">你更喜欢哪种聚会形式？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">冷战，等对方先低头</button>
-                <button class="option-btn" data-score="2">先哄对方，哪怕不是自己的错</button>
-                <button class="option-btn" data-score="3">冷静下来后，和对方好好沟通</button>
-                <button class="option-btn" data-score="4">分析谁对谁错，再决定要不要继续这段关系</button>
+                <button class="option-btn" data-score="1">A. 大型热闹派对</button>
+                <button class="option-btn" data-score="2">B. 三五好友轻松小聚</button>
+                <button class="option-btn" data-score="3">C. 一对一聊天谈心</button>
+                <button class="option-btn" data-score="4">D. 偏爱独处，不爱聚会</button>
             </div>
         </div>
 
-        <!-- 题目6 -->
+        <!-- 第6题 -->
         <div class="question-slide" id="q6">
-            <div class="question-number">6/20</div>
-            <div class="question-title">你对新鲜事物的态度是？</div>
+            <div class="question-number">问题 6 / 20</div>
+            <div class="question-title">做决定时，你通常？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">必须第一时间跟风，不玩就out了</button>
-                <button class="option-btn" data-score="2">身边人都在玩，我也试试</button>
-                <button class="option-btn" data-score="3">先观望一阵，等它稳定了再说</button>
-                <button class="option-btn" data-score="4">只关注对自己有用的，不盲目跟风</button>
+                <button class="option-btn" data-score="1">A. 凭直觉，果断快速</button>
+                <button class="option-btn" data-score="2">B. 简单思考，很快决定</button>
+                <button class="option-btn" data-score="3">C. 反复权衡，谨慎选择</button>
+                <button class="option-btn" data-score="4">D. 犹豫不决，容易纠结</button>
             </div>
         </div>
 
-        <!-- 题目7 -->
+        <!-- 第7题 -->
         <div class="question-slide" id="q7">
-            <div class="question-number">7/20</div>
-            <div class="question-title">遇到挫折时，你会怎么安慰自己？</div>
+            <div class="question-number">问题 7 / 20</div>
+            <div class="question-title">听歌偏好是？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">大哭一场，发泄情绪</button>
-                <button class="option-btn" data-score="2">吃顿好的，睡一觉就忘了</button>
-                <button class="option-btn" data-score="3">和朋友倾诉，寻求安慰</button>
-                <button class="option-btn" data-score="4">告诉自己“这没什么，下次注意就好”</button>
+                <button class="option-btn" data-score="1">A. 热门新歌、流行曲</button>
+                <button class="option-btn" data-score="2">B. 轻快治愈的轻音乐</button>
+                <button class="option-btn" data-score="3">C. 怀旧金曲、经典老歌</button>
+                <button class="option-btn" data-score="4">D. 戏曲、纯音乐等偏传统曲风</button>
             </div>
         </div>
 
-        <!-- 题目8 -->
+        <!-- 第8题 -->
         <div class="question-slide" id="q8">
-            <div class="question-number">8/20</div>
-            <div class="question-title">你对金钱的看法是？</div>
+            <div class="question-number">问题 8 / 20</div>
+            <div class="question-title">对待生活里的小意外？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">及时行乐，有钱就花，不考虑以后</button>
-                <button class="option-btn" data-score="2">月光族，勉强够花就行</button>
-                <button class="option-btn" data-score="3">会存钱，必要时才会花大钱</button>
-                <button class="option-btn" data-score="4">理性理财，会规划收入和支出</button>
+                <button class="option-btn" data-score="1">A. 一笑而过，完全不在意</button>
+                <button class="option-btn" data-score="2">B. 短暂困扰，很快恢复</button>
+                <button class="option-btn" data-score="3">C. 有点焦虑，慢慢调整</button>
+                <button class="option-btn" data-score="4">D. 心烦意乱，难以释怀</button>
             </div>
         </div>
 
-        <!-- 题目9 -->
+        <!-- 第9题 -->
         <div class="question-slide" id="q9">
-            <div class="question-number">9/20</div>
-            <div class="question-title">和别人意见不合时，你会怎么做？</div>
+            <div class="question-number">问题 9 / 20</div>
+            <div class="question-title">你的作息状态？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">必须说服对方听我的</button>
-                <button class="option-btn" data-score="2">嘴上不说，心里觉得对方是错的</button>
-                <button class="option-btn" data-score="3">尊重不同意见，求同存异</button>
-                <button class="option-btn" data-score="4">倾听对方的想法，再表达自己的观点</button>
+                <button class="option-btn" data-score="1">A. 经常熬夜，作息随性</button>
+                <button class="option-btn" data-score="2">B. 偶尔熬夜，不算规律</button>
+                <button class="option-btn" data-score="3">C. 基本规律，早睡早起</button>
+                <button class="option-btn" data-score="4">D. 作息严格，多年不变</button>
             </div>
         </div>
 
-        <!-- 题目10 -->
+        <!-- 第10题 -->
         <div class="question-slide" id="q10">
-            <div class="question-number">10/20</div>
-            <div class="question-title">你更在意别人的看法吗？</div>
+            <div class="question-number">问题 10 / 20</div>
+            <div class="question-title">对未来的心态？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">非常在意，别人一句话能影响我一整天</button>
-                <button class="option-btn" data-score="2">会在意，但不会表现出来</button>
-                <button class="option-btn" data-score="3">只在意重要的人的看法</button>
-                <button class="option-btn" data-score="4">不太在意，自己开心最重要</button>
+                <button class="option-btn" data-score="1">A. 满怀憧憬，充满期待</button>
+                <button class="option-btn" data-score="2">B. 踏实努力，稳步向前</button>
+                <button class="option-btn" data-score="3">C. 顺其自然，平常心看待</button>
+                <button class="option-btn" data-score="4">D. 想得较多，略带忧虑</button>
             </div>
         </div>
 
-        <!-- 题目11 -->
+        <!-- 第11题 -->
         <div class="question-slide" id="q11">
-            <div class="question-number">11/20</div>
-            <div class="question-title">面对突发情况，你会？</div>
+            <div class="question-number">问题 11 / 20</div>
+            <div class="question-title">身边人对你的印象？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">慌得不行，不知道该怎么办</button>
-                <button class="option-btn" data-score="2">找别人帮忙，让别人拿主意</button>
-                <button class="option-btn" data-score="3">先稳住情绪，再想解决办法</button>
-                <button class="option-btn" data-score="4">冷静分析，快速制定应对方案</button>
+                <button class="option-btn" data-score="1">A. 活泼孩子气，天真烂漫</button>
+                <button class="option-btn" data-score="2">B. 阳光开朗，元气十足</button>
+                <button class="option-btn" data-score="3">C. 温和成熟，懂得照顾人</button>
+                <button class="option-btn" data-score="4">D. 沉稳内敛，阅历丰富</button>
             </div>
         </div>
 
-        <!-- 题目12 -->
+        <!-- 第12题 -->
         <div class="question-slide" id="q12">
-            <div class="question-number">12/20</div>
-            <div class="question-title">你对未来的态度是？</div>
+            <div class="question-number">问题 12 / 20</div>
+            <div class="question-title">出门旅行方式？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">充满幻想，觉得未来会很美好</button>
-                <button class="option-btn" data-score="2">有点迷茫，走一步看一步</button>
-                <button class="option-btn" data-score="3">有大致方向，但不确定能不能实现</button>
-                <button class="option-btn" data-score="4">目标明确，正在一步步努力实现</button>
+                <button class="option-btn" data-score="1">A. 说走就走，毫无计划</button>
+                <button class="option-btn" data-score="2">B. 简单规划，随心游玩</button>
+                <button class="option-btn" data-score="3">C. 详细做攻略，按计划走</button>
+                <button class="option-btn" data-score="4">D. 偏爱短途休闲，不爱奔波</button>
             </div>
         </div>
 
-        <!-- 题目13 -->
+        <!-- 第13题 -->
         <div class="question-slide" id="q13">
-            <div class="question-number">13/20</div>
-            <div class="question-title">你会主动和很久没联系的朋友聊天吗？</div>
+            <div class="question-number">问题 13 / 20</div>
+            <div class="question-title">会被可爱的小动物/饰品吸引吗？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">会！看到好玩的事就想分享给他们</button>
-                <button class="option-btn" data-score="2">偶尔会，但怕打扰对方</button>
-                <button class="option-btn" data-score="3">只有有事才会联系</button>
-                <button class="option-btn" data-score="4">不太会，顺其自然就好</button>
+                <button class="option-btn" data-score="1">A. 完全抵挡不住，特别喜欢</button>
+                <button class="option-btn" data-score="2">B. 觉得可爱，偶尔留意</button>
+                <button class="option-btn" data-score="3">C. 无感，不会特意关注</button>
+                <button class="option-btn" data-score="4">D. 不太喜欢，偏向简约风格</button>
             </div>
         </div>
 
-        <!-- 题目14 -->
+        <!-- 第14题 -->
         <div class="question-slide" id="q14">
-            <div class="question-number">14/20</div>
-            <div class="question-title">你对自己的缺点是什么态度？</div>
+            <div class="question-number">问题 14 / 20</div>
+            <div class="question-title">和人产生矛盾后？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">逃避，不想面对自己的不足</button>
-                <button class="option-btn" data-score="2">知道但不想改，就这样吧</button>
-                <button class="option-btn" data-score="3">会尝试慢慢改变自己</button>
-                <button class="option-btn" data-score="4">正视缺点，甚至会把它转化为优势</button>
+                <button class="option-btn" data-score="1">A. 转头就忘，主动和好</button>
+                <button class="option-btn" data-score="2">B. 慢慢缓和，恢复如常</button>
+                <button class="option-btn" data-score="3">C. 保持距离，不再深交</button>
+                <button class="option-btn" data-score="4">D. 记在心里，很难释怀</button>
             </div>
         </div>
 
-        <!-- 题目15 -->
+        <!-- 第15题 -->
         <div class="question-slide" id="q15">
-            <div class="question-number">15/20</div>
-            <div class="question-title">当你被别人误解时，你会？</div>
+            <div class="question-number">问题 15 / 20</div>
+            <div class="question-title">日常消费观念？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">立刻解释，怕别人误会自己</button>
-                <button class="option-btn" data-score="2">有点委屈，不知道该怎么办</button>
-                <button class="option-btn" data-score="3">只和重要的人解释，其他人无所谓</button>
-                <button class="option-btn" data-score="4">不解释，懂你的人自然懂</button>
+                <button class="option-btn" data-score="1">A. 喜欢就买，及时行乐</button>
+                <button class="option-btn" data-score="2">B. 量力而行，适度消费</button>
+                <button class="option-btn" data-score="3">C. 精打细算，能省则省</button>
+                <button class="option-btn" data-score="4">D. 注重储蓄，很少乱花钱</button>
             </div>
         </div>
 
-        <!-- 题目16 -->
+        <!-- 第16题 -->
         <div class="question-slide" id="q16">
-            <div class="question-number">16/20</div>
-            <div class="question-title">你更享受过程还是结果？</div>
+            <div class="question-number">问题 16 / 20</div>
+            <div class="question-title">想象力与幻想能力？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">更享受过程，开心最重要</button>
-                <button class="option-btn" data-score="2">过程和结果都很重要</button>
-                <button class="option-btn" data-score="3">结果更重要，不然努力就白费了</button>
-                <button class="option-btn" data-score="4">结果是目标，过程是成长，都不放弃</button>
+                <button class="option-btn" data-score="1">A. 脑洞很大，经常幻想</button>
+                <button class="option-btn" data-score="2">B. 偶尔天马行空</button>
+                <button class="option-btn" data-score="3">C. 偏向现实，很少幻想</button>
+                <button class="option-btn" data-score="4">D. 脚踏实地，只看眼前</button>
             </div>
         </div>
 
-        <!-- 题目17 -->
+        <!-- 第17题 -->
         <div class="question-slide" id="q17">
-            <div class="question-number">17/20</div>
-            <div class="question-title">你会因为别人的成功而焦虑吗？</div>
+            <div class="question-number">问题 17 / 20</div>
+            <div class="question-title">面对挑战和难题？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">会！越看越觉得自己没用</button>
-                <button class="option-btn" data-score="2">有点羡慕，但很快就忘了</button>
-                <button class="option-btn" data-score="3">会把对方当成榜样，激励自己努力</button>
-                <button class="option-btn" data-score="4">不会，每个人的节奏不一样，和自己比就好</button>
+                <button class="option-btn" data-score="1">A. 兴奋好奇，主动迎战</button>
+                <button class="option-btn" data-score="2">B. 平常心，尽力去做</button>
+                <button class="option-btn" data-score="3">C. 有点压力，硬着头皮上</button>
+                <button class="option-btn" data-score="4">D. 害怕麻烦，尽量回避</button>
             </div>
         </div>
 
-        <!-- 题目18 -->
+        <!-- 第18题 -->
         <div class="question-slide" id="q18">
-            <div class="question-number">18/20</div>
-            <div class="question-title">你对生活的期待是？</div>
+            <div class="question-number">问题 18 / 20</div>
+            <div class="question-title">是否经常回忆过去？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">轰轰烈烈，每天都有新惊喜</button>
-                <button class="option-btn" data-score="2">开心就好，不用太复杂</button>
-                <button class="option-btn" data-score="3">安稳平淡，不用大起大落</button>
-                <button class="option-btn" data-score="4">在平淡中找到属于自己的乐趣</button>
+                <button class="option-btn" data-score="1">A. 从不回忆，专注当下</button>
+                <button class="option-btn" data-score="2">B. 偶尔想起，一笑而过</button>
+                <button class="option-btn" data-score="3">C. 时常怀念旧日时光</button>
+                <button class="option-btn" data-score="4">D. 深陷回忆，感慨良多</button>
             </div>
         </div>
 
-        <!-- 题目19 -->
+        <!-- 第19题 -->
         <div class="question-slide" id="q19">
-            <div class="question-number">19/20</div>
-            <div class="question-title">当你感到压力大时，你会怎么释放？</div>
+            <div class="question-number">问题 19 / 20</div>
+            <div class="question-title">说话做事风格？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">暴饮暴食、熬夜刷手机，破罐破摔</button>
-                <button class="option-btn" data-score="2">睡一觉，醒来就好了</button>
-                <button class="option-btn" data-score="3">运动、听歌，做点能让自己放松的事</button>
-                <button class="option-btn" data-score="4">分析压力来源，找到解决办法，从根源缓解</button>
+                <button class="option-btn" data-score="1">A. 直来直去，简单纯粹</button>
+                <button class="option-btn" data-score="2">B. 随性自然，不拘小节</button>
+                <button class="option-btn" data-score="3">C. 谈吐得体，顾及他人</button>
+                <button class="option-btn" data-score="4">D. 谨慎稳重，思虑周全</button>
             </div>
         </div>
 
-        <!-- 题目20 -->
+        <!-- 第20题 -->
         <div class="question-slide" id="q20">
-            <div class="question-number">20/20</div>
-            <div class="question-title">你觉得自己现在的状态是？</div>
+            <div class="question-number">问题 20 / 20</div>
+            <div class="question-title">整体生活心态？</div>
             <div class="options">
-                <button class="option-btn" data-score="1">充满活力，对一切都充满热情</button>
-                <button class="option-btn" data-score="2">偶尔迷茫，但大部分时候都很开心</button>
-                <button class="option-btn" data-score="3">比较成熟，能处理好大部分事情</button>
-                <button class="option-btn" data-score="4">通透从容，接纳自己的一切</button>
+                <button class="option-btn" data-score="1">A. 元气满满，永远乐观</button>
+                <button class="option-btn" data-score="2">B. 积极向上，热爱生活</button>
+                <button class="option-btn" data-score="3">C. 平和淡然，随遇而安</button>
+                <button class="option-btn" data-score="4">D. 沉稳佛系，看淡一切</button>
             </div>
         </div>
 
-        <!-- 结果页 -->
-        <div class="question-slide result-slide" id="result">
+        <!-- 结果页面 -->
+        <div class="result-slide" id="result">
             <div class="result-title">你的心理年龄是</div>
-            <div class="result-age" id="finalAge"></div>
-            <div class="result-desc" id="finalDesc"></div>
+            <div class="result-age" id="ageResult">0</div>
+            <div class="result-desc" id="ageDesc"></div>
             <button class="restart-btn" onclick="restartTest()">重新测试</button>
         </div>
     </div>
 
     <script>
+        // 授权码，可自行修改纯数字
+        const validCodes = ["202608"];
+        const authPage = document.getElementById('authPage');
+        const testPage = document.getElementById('testPage');
+        const codeInput = document.getElementById('codeInput');
+        const errorTip = document.getElementById('errorTip');
+
+        // 回车快速提交授权码
+        codeInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                checkCode();
+            }
+        });
+
+        // 授权码校验
+        function checkCode() {
+            const inputCode = codeInput.value.trim();
+            if (validCodes.includes(inputCode)) {
+                authPage.style.display = 'none';
+                testPage.style.display = 'block';
+                initTest();
+            } else {
+                errorTip.style.display = 'block';
+                codeInput.value = '';
+                codeInput.focus();
+                setTimeout(() => {
+                    errorTip.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // 测试核心逻辑（共20题）
         let currentQuestion = 1;
         let totalScore = 0;
         const totalQuestions = 20;
 
-        // 绑定所有选项按钮
-        document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const score = parseInt(btn.dataset.score);
-                totalScore += score;
-
-                // 隐藏当前题目
-                document.getElementById(`q${currentQuestion}`).classList.remove('active');
-
-                // 进度条更新
-                const progress = (currentQuestion / totalQuestions) * 100;
-                document.getElementById('progressFill').style.width = `${progress}%`;
-
-                // 切换到下一题或结果页
-                if (currentQuestion < totalQuestions) {
-                    currentQuestion++;
-                    document.getElementById(`q${currentQuestion}`).classList.add('active');
-                } else {
-                    showResult();
-                }
+        function initTest() {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    totalScore += parseInt(this.dataset.score);
+                    nextQuestion();
+                });
             });
-        });
+        }
 
-        // 显示结果
-        function showResult() {
-            document.getElementById('result').classList.add('active');
-            let age, desc;
-            if (totalScore <= 20) {
-                age = 18;
-                desc = "你的心理年龄像18岁的少年，对世界充满好奇，敢爱敢恨，永远保持着热烈与冲劲。";
-            } else if (totalScore <= 35) {
-                age = 25;
-                desc = "你的心理年龄在25岁左右，有自己的小成熟，也保留着一份孩子气，懂得在现实和热爱之间找平衡。";
-            } else if (totalScore <= 50) {
-                age = 35;
-                desc = "你的心理年龄约35岁，处事沉稳，情绪稳定，懂得接纳不完美，和生活和解。";
+        function nextQuestion() {
+            document.getElementById(`q${currentQuestion}`).classList.remove('active');
+            currentQuestion++;
+            document.getElementById('progressFill').style.width = `${(currentQuestion / totalQuestions) * 100}%`;
+
+            if (currentQuestion > totalQuestions) {
+                showResult();
             } else {
-                age = 45;
-                desc = "你的心理年龄像45岁的智者，通透豁达，见过风雨却依然温柔，有着看透不说破的松弛感。";
+                document.getElementById(`q${currentQuestion}`).classList.add('active');
             }
-            document.getElementById('finalAge').textContent = `${age}岁`;
-            document.getElementById('finalDesc').textContent = desc;
+        }
+
+        // 计算并展示心理年龄结果
+        function showResult() {
+            let age, desc;
+            if (totalScore >= 60) {
+                age = "45+岁";
+                desc = "你的内心十分成熟通透，历经世事，待人温和包容，有着超越年龄的沉稳与阅历。";
+            } else if (totalScore >= 45) {
+                age = "30岁";
+                desc = "你心智成熟，做事稳重，懂得权衡取舍，生活节奏张弛有度，兼具理性与温柔。";
+            } else if (totalScore >= 35) {
+                age = "25岁";
+                desc = "成熟与朝气在你身上共存，有自己的想法和目标，对生活抱有热情，进退有度。";
+            } else {
+                age = "18岁";
+                desc = "你拥有一颗纯真少年心，简单快乐、热爱生活，对世界永远保持好奇与热忱。";
+            }
+            document.getElementById('ageResult').textContent = age;
+            document.getElementById('ageDesc').textContent = desc;
+            document.getElementById('result').classList.add('active');
         }
 
         // 重新测试
@@ -338,6 +563,7 @@ html
             document.querySelectorAll('.question-slide').forEach(slide => slide.classList.remove('active'));
             document.getElementById('q1').classList.add('active');
             document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('result').classList.remove('active');
         }
     </script>
 </body>
