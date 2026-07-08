@@ -2,344 +2,261 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>心理年龄测试</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "微软雅黑", sans-serif;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         body {
-            background-color: #f5f7fa;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 2px 20px #ddd;
-        }
-        h1 {
-            text-align: center;
             color: #333;
-            margin-bottom: 30px;
-            font-size: 24px;
         }
-        .question {
-            margin: 16px 0;
-            font-size: 15px;
-            line-height: 1.6;
+        .test-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+            position: relative;
         }
-        .option {
-            margin: 6px 0 6px 22px;
-            cursor: pointer;
-        }
-        button {
-            display: block;
-            width: 220px;
-            height: 50px;
-            margin: 35px auto 20px;
-            border: none;
-            background: #7289da;
-            color: white;
-            font-size: 17px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #5b73b9;
-        }
-        #result {
-            margin-top: 25px;
-            padding: 25px;
-            border-radius: 10px;
-            font-size: 16px;
-            text-align: center;
+        .question-slide {
             display: none;
-            background: #f0f4ff;
+            padding: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+        .question-slide.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-bar {
+            height: 5px;
+            background: #eee;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .question-number {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .question-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .option-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        .option-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+        .option-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .result-slide {
+            text-align: center;
+            padding: 60px 40px;
+        }
+        .result-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .result-age {
+            font-size: 60px;
+            font-weight: 900;
+            color: #333;
+            margin: 20px 0;
+        }
+        .result-desc {
+            font-size: 16px;
+            color: #666;
             line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        .restart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 40px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .restart-btn:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>心理年龄测试</h1>
+    <div class="test-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
 
         <!-- 第1题 -->
-        <div class="question">
-            <p>1. 空闲时间你更喜欢？</p>
-            <div class="option"><input type="radio" name="q1" value="1"> A. 玩游戏、追剧、出门玩乐</div>
-            <div class="option"><input type="radio" name="q1" value="2"> B. 散步、聊天、做点小事</div>
-            <div class="option"><input type="radio" name="q1" value="3"> C. 看书、静坐、独自思考</div>
-        </div>
-        <!-- 第2题 -->
-        <div class="question">
-            <p>2. 面对新鲜事物，你的态度是？</p>
-            <div class="option"><input type="radio" name="q2" value="1"> A. 特别好奇，立刻尝试</div>
-            <div class="option"><input type="radio" name="q2" value="2"> B. 感兴趣，观望后再试</div>
-            <div class="option"><input type="radio" name="q2" value="3"> C. 不太感兴趣，不愿接触</div>
-        </div>
-        <!-- 第3题 -->
-        <div class="question">
-            <p>3. 别人对你的评价更多是？</p>
-            <div class="option"><input type="radio" name="q3" value="1"> A. 活泼好动，像个孩子</div>
-            <div class="option"><input type="radio" name="q3" value="2"> B. 心态平和，成熟有度</div>
-            <div class="option"><input type="radio" name="q3" value="3"> C. 稳重老成，想法很多</div>
-        </div>
-        <!-- 第4题 -->
-        <div class="question">
-            <p>4. 遇到不顺心的事，你会？</p>
-            <div class="option"><input type="radio" name="q4" value="1"> A. 情绪写在脸上，很快发泄</div>
-            <div class="option"><input type="radio" name="q4" value="2"> B. 短暂不开心，很快调整</div>
-            <div class="option"><input type="radio" name="q4" value="3"> C. 默默放在心里，独自消化</div>
-        </div>
-        <!-- 第5题 -->
-        <div class="question">
-            <p>5. 出门穿搭风格偏向？</p>
-            <div class="option"><input type="radio" name="q5" value="1"> A. 潮流、可爱、个性款式</div>
-            <div class="option"><input type="radio" name="q5" value="2"> B. 简约大方，舒服为主</div>
-            <div class="option"><input type="radio" name="q5" value="3"> C. 朴素沉稳，款式传统</div>
-        </div>
-        <!-- 第6题 -->
-        <div class="question">
-            <p>6. 做选择时，你习惯？</p>
-            <div class="option"><input type="radio" name="q6" value="1"> A. 凭直觉，随心决定</div>
-            <div class="option"><input type="radio" name="q6" value="2"> B. 简单思考后做决定</div>
-            <div class="option"><input type="radio" name="q6" value="3"> C. 反复权衡，深思熟虑</div>
-        </div>
-        <!-- 第7题 -->
-        <div class="question">
-            <p>7. 喜欢的音乐类型？</p>
-            <div class="option"><input type="radio" name="q7" value="1"> A. 流行、欢快、动感歌曲</div>
-            <div class="option"><input type="radio" name="q7" value="2"> B. 舒缓情歌、大众金曲</div>
-            <div class="option"><input type="radio" name="q7" value="3"> C. 老歌、纯音乐、古典乐</div>
-        </div>
-        <!-- 第8题 -->
-        <div class="question">
-            <p>8. 和朋友相处，你更像？</p>
-            <div class="option"><input type="radio" name="q8" value="1"> A. 活跃气氛的开心果</div>
-            <div class="option"><input type="radio" name="q8" value="2"> B. 随和的普通玩伴</div>
-            <div class="option"><input type="radio" name="q8" value="3"> C. 倾听者，很少主动打闹</div>
-        </div>
-        <!-- 第9题 -->
-        <div class="question">
-            <p>9. 对于未来，你的想法是？</p>
-            <div class="option"><input type="radio" name="q9" value="1"> A. 走一步看一步，不想太远</div>
-            <div class="option"><input type="radio" name="q9" value="2"> B. 有简单规划，顺其自然</div>
-            <div class="option"><input type="radio" name="q9" value="3"> C. 想得很长远，顾虑较多</div>
-        </div>
-        <!-- 第10题 -->
-        <div class="question">
-            <p>10. 走路、做事的节奏？</p>
-            <div class="option"><input type="radio" name="q10" value="1"> A. 动作轻快，节奏很快</div>
-            <div class="option"><input type="radio" name="q10" value="2"> B. 速度适中，不紧不慢</div>
-            <div class="option"><input type="radio" name="q10" value="3"> C. 动作平缓，节奏偏慢</div>
-        </div>
-        <!-- 第11题 -->
-        <div class="question">
-            <p>11. 被人调侃玩笑，你会？</p>
-            <div class="option"><input type="radio" name="q11" value="1"> A. 一起开玩笑，乐在其中</div>
-            <div class="option"><input type="radio" name="q11" value="2"> B. 礼貌笑笑，不参与打闹</div>
-            <div class="option"><input type="radio" name="q11" value="3"> C. 有点尴尬，希望快点结束</div>
-        </div>
-        <!-- 第12题 -->
-        <div class="question">
-            <p>12. 更喜欢的节日氛围？</p>
-            <div class="option"><input type="radio" name="q12" value="1"> A. 热闹狂欢，人越多越好</div>
-            <div class="option"><input type="radio" name="q12" value="2"> B. 家人小聚，温馨简单</div>
-            <div class="option"><input type="radio" name="q12" value="3"> C. 安安静静，简单度过</div>
-        </div>
-        <!-- 第13题 -->
-        <div class="question">
-            <p>13. 学习新技能的意愿？</p>
-            <div class="option"><input type="radio" name="q13" value="1"> A. 兴趣浓厚，乐于尝试</div>
-            <div class="option"><input type="radio" name="q13" value="2"> B. 有用就学，随缘学习</div>
-            <div class="option"><input type="radio" name="q13" value="3"> C. 懒得学习，习惯旧方式</div>
-        </div>
-        <!-- 第14题 -->
-        <div class="question">
-            <p>14. 看待童话、浪漫故事？</p>
-            <div class="option"><input type="radio" name="q14" value="1"> A. 相信并且很喜欢</div>
-            <div class="option"><input type="radio" name="q14" value="2"> B. 当作娱乐，偶尔看看</div>
-            <div class="option"><input type="radio" name="q14" value="3"> C. 觉得不真实，不太感兴趣</div>
-        </div>
-        <!-- 第15题 -->
-        <div class="question">
-            <p>15. 遇到挫折，恢复速度？</p>
-            <div class="option"><input type="radio" name="q15" value="1"> A. 很快释怀，转眼就忘</div>
-            <div class="option"><input type="radio" name="q15" value="2"> B. 调整几天就能恢复</div>
-            <div class="option"><input type="radio" name="q15" value="3"> C. 久久放不下，容易多想</div>
-        </div>
-        <!-- 第16题 -->
-        <div class="question">
-            <p>16. 消费观念是？</p>
-            <div class="option"><input type="radio" name="q16" value="1"> A. 喜欢就买，开心最重要</div>
-            <div class="option"><input type="radio" name="q16" value="2"> B. 按需购买，适度消费</div>
-            <div class="option"><input type="radio" name="q16" value="3"> C. 精打细算，能省则省</div>
-        </div>
-        <!-- 第17题 -->
-        <div class="question">
-            <p>17. 夜晚休息时间？</p>
-            <div class="option"><input type="radio" name="q17" value="1"> A. 熬夜玩耍，晚睡晚起</div>
-            <div class="option"><input type="radio" name="q17" value="2"> B. 作息正常，按时休息</div>
-            <div class="option"><input type="radio" name="q17" value="3"> C. 早睡早起，作息规律传统</div>
-        </div>
-        <!-- 第18题 -->
-        <div class="question">
-            <p>18. 想象力丰富吗？</p>
-            <div class="option"><input type="radio" name="q18" value="1"> A. 脑洞很大，爱幻想</div>
-            <div class="option"><input type="radio" name="q18" value="2"> B. 偶尔想象，贴合现实</div>
-            <div class="option"><input type="radio" name="q18" value="3"> C. 偏向现实，很少幻想</div>
-        </div>
-        <!-- 第19题 -->
-        <div class="question">
-            <p>19. 对待人情世故？</p>
-            <div class="option"><input type="radio" name="q19" value="1"> A. 大大咧咧，不太在意</div>
-            <div class="option"><input type="radio" name="q19" value="2"> B. 基本懂分寸，得体待人</div>
-            <div class="option"><input type="radio" name="q19" value="3"> C. 思虑周全，格外谨慎</div>
-        </div>
-        <!-- 第20题 -->
-        <div class="question">
-            <p>20. 更喜欢的天气？</p>
-            <div class="option"><input type="radio" name="q20" value="1"> A. 晴天、热闹的好天气</div>
-            <div class="option"><input type="radio" name="q20" value="2"> B. 多云、温和舒适的天气</div>
-            <div class="option"><input type="radio" name="q20" value="3"> C. 阴天、雨天，安静的天气</div>
-        </div>
-        <!-- 第21题 -->
-        <div class="question">
-            <p>21. 做事的耐心如何？</p>
-            <div class="option"><input type="radio" name="q21" value="1"> A. 耐心一般，容易急躁</div>
-            <div class="option"><input type="radio" name="q21" value="2"> B. 耐心尚可，能坚持做完</div>
-            <div class="option"><input type="radio" name="q21" value="3"> C. 耐心十足，沉稳有毅力</div>
-        </div>
-        <!-- 第22题 -->
-        <div class="question">
-            <p>22. 朋友圈子类型？</p>
-            <div class="option"><input type="radio" name="q22" value="1"> A. 朋友多，年龄跨度大</div>
-            <div class="option"><input type="radio" name="q22" value="2"> B. 同龄人为主，圈子稳定</div>
-            <div class="option"><input type="radio" name="q22" value="3"> C. 好友不多，偏年长朋友多</div>
-        </div>
-        <!-- 第23题 -->
-        <div class="question">
-            <p>23. 看待规则和约束？</p>
-            <div class="option"><input type="radio" name="q23" value="1"> A. 觉得束缚，想随性而为</div>
-            <div class="option"><input type="radio" name="q23" value="2"> B. 遵守规则，正常对待</div>
-            <div class="option"><input type="radio" name="q23" value="3"> C. 认同规则，主动遵守</div>
-        </div>
-        <!-- 第24题 -->
-        <div class="question">
-            <p>24. 拍照喜欢什么风格？</p>
-            <div class="option"><input type="radio" name="q24" value="1"> A. 搞怪、可爱、活泼风格</div>
-            <div class="option"><input type="radio" name="q24" value="2"> B. 自然日常，简单记录</div>
-            <div class="option"><input type="radio" name="q24" value="3"> C. 端庄沉稳，不喜摆拍</div>
-        </div>
-        <!-- 第25题 -->
-        <div class="question">
-            <p>25. 压力大时会？</p>
-            <div class="option"><input type="radio" name="q25" value="1"> A. 吃喝玩乐，快速解压</div>
-            <div class="option"><input type="radio" name="q25" value="2"> B. 找人聊聊，慢慢缓解</div>
-            <div class="option"><input type="radio" name="q25" value="3"> C. 独自静养，慢慢消化</div>
-        </div>
-        <!-- 第26题 -->
-        <div class="question">
-            <p>26. 对怀旧事物的态度？</p>
-            <div class="option"><input type="radio" name="q26" value="1"> A. 一般，更喜欢新鲜事物</div>
-            <div class="option"><input type="radio" name="q26" value="2"> B. 偶尔怀念，淡淡感慨</div>
-            <div class="option"><input type="radio" name="q26" value="3"> C. 十分念旧，经常回忆过去</div>
-        </div>
-        <!-- 第27题 -->
-        <div class="question">
-            <p>27. 说话方式？</p>
-            <div class="option"><input type="radio" name="q27" value="1"> A. 直来直去，语速较快</div>
-            <div class="option"><input type="radio" name="q27" value="2"> B. 语速平稳，表达适中</div>
-            <div class="option"><input type="radio" name="q27" value="3"> C. 语速偏慢，言语谨慎</div>
-        </div>
-        <!-- 第28题 -->
-        <div class="question">
-            <p>28. 冒险、刺激的活动？</p>
-            <div class="option"><input type="radio" name="q28" value="1"> A. 很喜欢，愿意尝试</div>
-            <div class="option"><input type="radio" name="q28" value="2"> B. 可以试试，不主动追求</div>
-            <div class="option"><input type="radio" name="q28" value="3"> C. 害怕抵触，完全不想参与</div>
-        </div>
-        <!-- 第29题 -->
-        <div class="question">
-            <p>29. 做事心态？</p>
-            <div class="option"><input type="radio" name="q29" value="1"> A. 乐观积极，充满活力</div>
-            <div class="option"><input type="radio" name="q29" value="2"> B. 心态平和，不喜不悲</div>
-            <div class="option"><input type="radio" name="q29" value="3"> C. 偏向稳重，略带悲观</div>
-        </div>
-        <!-- 第30题 -->
-        <div class="question">
-            <p>30. 整体生活状态？</p>
-            <div class="option"><input type="radio" name="q30" value="1"> A. 元气满满，像少年少女</div>
-            <div class="option"><input type="radio" name="q30" value="2"> B. 成熟稳重，状态均衡</div>
-            <div class="option"><input type="radio" name="q30" value="3"> C. 老成踏实，心态偏沧桑</div>
+        <div class="question-slide active" id="q1">
+            <div class="question-number">问题 1 / 5</div>
+            <div class="question-title">遇到不顺心的事，你通常会怎么做？</div>
+            <div class="options">
+                <button class="option-btn" data-score="1">A. 闷在心里，慢慢消化</button>
+                <button class="option-btn" data-score="2">B. 找朋友吐槽，说完就忘</button>
+                <button class="option-btn" data-score="3">C. 先解决问题，再处理情绪</button>
+                <button class="option-btn" data-score="4">D. 吃顿好的/睡一觉就好了</button>
+            </div>
         </div>
 
-        <button onclick="getResult()">查看心理年龄</button>
-        <div id="result"></div>
+        <!-- 第2题 -->
+        <div class="question-slide" id="q2">
+            <div class="question-number">问题 2 / 5</div>
+            <div class="question-title">周末你更倾向于怎么过？</div>
+            <div class="options">
+                <button class="option-btn" data-score="1">A. 宅家睡觉/追剧，彻底躺平</button>
+                <button class="option-btn" data-score="2">B. 约朋友吃饭逛街，热闹一点</button>
+                <button class="option-btn" data-score="3">C. 安排学习/运动，提升自己</button>
+                <button class="option-btn" data-score="4">D. 随机出门，想到哪玩到哪</button>
+            </div>
+        </div>
+
+        <!-- 第3题 -->
+        <div class="question-slide" id="q3">
+            <div class="question-number">问题 3 / 5</div>
+            <div class="question-title">别人对你的评价，你会在意吗？</div>
+            <div class="options">
+                <button class="option-btn" data-score="1">A. 非常在意，会反复琢磨</button>
+                <button class="option-btn" data-score="2">B. 分人，重要的人的评价会在意</button>
+                <button class="option-btn" data-score="3">C. 有则改之，无则加勉，不往心里去</button>
+                <button class="option-btn" data-score="4">D. 完全不在意，我开心最重要</button>
+            </div>
+        </div>
+
+        <!-- 第4题 -->
+        <div class="question-slide" id="q4">
+            <div class="question-number">问题 4 / 5</div>
+            <div class="question-title">面对选择时，你通常会？</div>
+            <div class="options">
+                <button class="option-btn" data-score="1">A. 纠结很久，害怕选错</button>
+                <button class="option-btn" data-score="2">B. 听别人的建议，跟着大家选</button>
+                <button class="option-btn" data-score="3">C. 快速分析利弊，果断决定</button>
+                <button class="option-btn" data-score="4">D. 抛硬币/凭直觉，选了就不后悔</button>
+            </div>
+        </div>
+
+        <!-- 第5题 -->
+        <div class="question-slide" id="q5">
+            <div class="question-number">问题 5 / 5</div>
+            <div class="question-title">你对未来的生活，更多是？</div>
+            <div class="options">
+                <button class="option-btn" data-score="1">A. 有点迷茫，走一步看一步</button>
+                <button class="option-btn" data-score="2">B. 充满期待，相信会越来越好</button>
+                <button class="option-btn" data-score="3">C. 规划得很清楚，按计划推进</button>
+                <button class="option-btn" data-score="4">D. 顺其自然，享受当下就好</button>
+            </div>
+        </div>
+
+        <!-- 结果页 -->
+        <div class="question-slide result-slide" id="result">
+            <div class="result-title">你的心理年龄是</div>
+            <div class="result-age" id="finalAge">--</div>
+            <div class="result-desc" id="finalDesc"></div>
+            <button class="restart-btn" onclick="restartTest()">重新测试</button>
+        </div>
     </div>
 
     <script>
-        function getResult() {
-            // 获取30道题分数
-            let q1 = document.querySelector('input[name="q1"]:checked')?.value || 0;
-            let q2 = document.querySelector('input[name="q2"]:checked')?.value || 0;
-            let q3 = document.querySelector('input[name="q3"]:checked')?.value || 0;
-            let q4 = document.querySelector('input[name="q4"]:checked')?.value || 0;
-            let q5 = document.querySelector('input[name="q5"]:checked')?.value || 0;
-            let q6 = document.querySelector('input[name="q6"]:checked')?.value || 0;
-            let q7 = document.querySelector('input[name="q7"]:checked')?.value || 0;
-            let q8 = document.querySelector('input[name="q8"]:checked')?.value || 0;
-            let q9 = document.querySelector('input[name="q9"]:checked')?.value || 0;
-            let q10 = document.querySelector('input[name="q10"]:checked')?.value || 0;
-            let q11 = document.querySelector('input[name="q11"]:checked')?.value || 0;
-            let q12 = document.querySelector('input[name="q12"]:checked')?.value || 0;
-            let q13 = document.querySelector('input[name="q13"]:checked')?.value || 0;
-            let q14 = document.querySelector('input[name="q14"]:checked')?.value || 0;
-            let q15 = document.querySelector('input[name="q15"]:checked')?.value || 0;
-            let q16 = document.querySelector('input[name="q16"]:checked')?.value || 0;
-            let q17 = document.querySelector('input[name="q17"]:checked')?.value || 0;
-            let q18 = document.querySelector('input[name="q18"]:checked')?.value || 0;
-            let q19 = document.querySelector('input[name="q19"]:checked')?.value || 0;
-            let q20 = document.querySelector('input[name="q20"]:checked')?.value || 0;
-            let q21 = document.querySelector('input[name="q21"]:checked')?.value || 0;
-            let q22 = document.querySelector('input[name="q22"]:checked')?.value || 0;
-            let q23 = document.querySelector('input[name="q23"]:checked')?.value || 0;
-            let q24 = document.querySelector('input[name="q24"]:checked')?.value || 0;
-            let q25 = document.querySelector('input[name="q25"]:checked')?.value || 0;
-            let q26 = document.querySelector('input[name="q26"]:checked')?.value || 0;
-            let q27 = document.querySelector('input[name="q27"]:checked')?.value || 0;
-            let q28 = document.querySelector('input[name="q28"]:checked')?.value || 0;
-            let q29 = document.querySelector('input[name="q29"]:checked')?.value || 0;
-            let q30 = document.querySelector('input[name="q30"]:checked')?.value || 0;
+        let currentQuestion = 1;
+        let totalScore = 0;
+        const totalQuestions = 5;
 
-            // 计算总分
-            let total = Number(q1)+Number(q2)+Number(q3)+Number(q4)+Number(q5)
-            +Number(q6)+Number(q7)+Number(q8)+Number(q9)+Number(q10)
-            +Number(q11)+Number(q12)+Number(q13)+Number(q14)+Number(q15)
-            +Number(q16)+Number(q17)+Number(q18)+Number(q19)+Number(q20)
-            +Number(q21)+Number(q22)+Number(q23)+Number(q24)+Number(q25)
-            +Number(q26)+Number(q27)+Number(q28)+Number(q29)+Number(q30);
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const score = parseInt(this.dataset.score);
+                totalScore += score;
+                showNextQuestion();
+            });
+        });
 
-            let resText = "";
-            // 分数对应心理年龄（满分90，最低30）
-            if(total >= 30 && total <= 45){
-                resText = "🎈 你的心理年龄：12~18岁\n内心纯粹天真，充满童趣与活力。对世界抱有好奇，心态年轻又烂漫，永远保有一份少年感。";
-            }else if(total >= 46 && total <= 65){
-                resText = "🌿 你的心理年龄：19~30岁\n心态成熟又不失活力，懂得人情世故，也保留着热情。处事从容，是最舒服的人生状态。";
-            }else if(total >= 66 && total <= 80){
-                resText = "🍵 你的心理年龄：31~45岁\n心智沉稳老练，考虑事情周全。做事踏实稳重，心态平和淡然，有着超越同龄人的通透。";
-            }else{
-                resText = "🕯️ 你的心理年龄：46岁以上\n内心十分成熟通透，看淡很多琐事。性格温和内敛，处事谨慎稳重，拥有岁月沉淀下来的从容。";
+        function showNextQuestion() {
+            document.getElementById(`q${currentQuestion}`).classList.remove('active');
+            currentQuestion++;
+            const progressPercent = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+
+            if (currentQuestion > totalQuestions) {
+                showResult();
+            } else {
+                document.getElementById(`q${currentQuestion}`).classList.add('active');
             }
+        }
 
-            let resultBox = document.getElementById("result");
-            resultBox.innerText = resText;
-            resultBox.style.display = "block";
+        function showResult() {
+            document.getElementById('result').classList.add('active');
+            let age, desc;
+            if (totalScore <= 6) {
+                age = 18;
+                desc = "你的心理年龄像18岁的少年，对世界充满好奇，敢爱敢恨，永远保持着热烈与冲劲。";
+            } else if (totalScore <= 10) {
+                age = 25;
+                desc = "你的心理年龄在25岁左右，有自己的小成熟，也保留着一份孩子气，懂得在现实和热爱之间找平衡。";
+            } else if (totalScore <= 14) {
+                age = 35;
+                desc = "你的心理年龄约35岁，处事沉稳，情绪稳定，懂得接纳不完美，和生活和解。";
+            } else {
+                age = 45;
+                desc = "你的心理年龄像45岁的智者，通透豁达，见过风雨却依然温柔，有着看透不说破的松弛感。";
+            }
+            document.getElementById('finalAge').textContent = `${age}岁`;
+            document.getElementById('finalDesc').textContent = desc;
+        }
+
+        function restartTest() {
+            currentQuestion = 1;
+            totalScore = 0;
+            document.querySelectorAll('.question-slide').forEach(slide => slide.classList.remove('active'));
+            document.getElementById('q1').classList.add('active');
+            document.getElementById('progressFill').style.width = '0%';
         }
     </script>
 </body>
